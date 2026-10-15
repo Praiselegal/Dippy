@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIPPY Skincare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --milk:#FFFBF0;
+    --mist:#EDB6B9;
+    --plum:#4A1C26;
+    --dip:#D9808A;
+    --aloe:#F7DEDC;
+    --line:#EBD6CF;
+    --display:'Fredoka','Trebuchet MS',sans-serif;
+    --body:'DM Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:120px}
+  body{font-family:var(--body);background:var(--milk);color:var(--plum);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--dip);outline-offset:3px}
+
+  /* ---------- COVER ---------- */
+  .cover{
+    position:fixed;inset:0;z-index:100;border:0;width:100%;
+    background:var(--mist);color:var(--plum);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    transition:transform .9s cubic-bezier(.7,0,.2,1);
+    font-family:var(--body);
+  }
+  .cover .drip{position:absolute;left:0;right:0;top:100%;width:100%;height:90px;display:block}
+  .cover.open{transform:translateY(-110%)}
+  .wordmark{font-family:var(--display);font-weight:700;letter-spacing:.02em;line-height:.9}
+  .cover .wordmark{font-size:clamp(84px,24vw,200px);animation:bob 3.2s ease-in-out infinite}
+  .cover .tap{font-size:1rem;font-weight:500;background:var(--plum);color:var(--milk);padding:12px 26px;border-radius:999px}
+  .cover .sub{font-size:1.05rem;max-width:26ch;text-align:center}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+  body.locked{overflow:hidden}
+
+  /* ---------- HEADER ---------- */
+  header.top{position:sticky;top:0;z-index:20;background:rgba(255,251,240,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .top-row{max-width:1100px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .top .wordmark{font-size:2rem}
+  .links{display:flex;gap:8px}
+  .pill{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:.9rem;padding:9px 16px;border-radius:999px;border:2px solid var(--plum);transition:background .2s,color .2s}
+  .pill:hover{background:var(--plum);color:var(--milk)}
+  .pill.solid{background:var(--dip);border-color:var(--dip);color:var(--plum)}
+  .pill.solid:hover{background:var(--plum);border-color:var(--plum);color:var(--milk)}
+  .pill svg{width:18px;height:18px;fill:currentColor}
+  nav.chips{max-width:1100px;margin:auto;padding:0 20px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+  nav.chips::-webkit-scrollbar{display:none}
+  nav.chips a{flex:none;text-decoration:none;font-weight:500;font-size:.9rem;padding:6px 14px;border-radius:999px;background:var(--mist)}
+  nav.chips a:hover{background:var(--aloe)}
+
+  /* ---------- INTRO ---------- */
+  .intro{max-width:1100px;margin:auto;padding:48px 20px 8px}
+  .intro h1{font-family:var(--display);font-size:clamp(2rem,6vw,3.4rem);line-height:1.05;max-width:16ch}
+  .intro p{margin-top:14px;max-width:52ch;font-size:1.05rem}
+
+  /* ---------- CATALOG ---------- */
+  main{max-width:1100px;margin:auto;padding:0 20px 40px}
+  .cat{padding-top:44px}
+  .cat h2{font-family:var(--display);font-size:1.8rem;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .cat h2 small{font-family:var(--body);font-size:.95rem;font-weight:400;opacity:.75}
+  .grid{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+  .card{border:2px solid var(--plum);border-radius:22px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+  .photo{aspect-ratio:1/1;background:var(--mist);display:grid;place-items:center;position:relative}
+  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .photo svg{width:46%;height:auto}
+  .info{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .info h3{font-size:1.02rem;font-weight:700;line-height:1.3}
+  .info .note{font-size:.88rem;opacity:.75}
+  .price{font-family:var(--display);font-size:1.3rem;font-weight:600;margin-top:auto;padding-top:8px}
+  .order{margin-top:8px;text-align:center;text-decoration:none;font-weight:700;font-size:.9rem;padding:9px;border-radius:12px;background:var(--aloe)}
+  .order:hover{background:var(--plum);color:var(--milk)}
+
+  /* ---------- CONSULT ---------- */
+  .consult{background:var(--plum);color:var(--milk);margin-top:40px}
+  .consult-in{max-width:1100px;margin:auto;padding:56px 20px;display:grid;gap:32px;grid-template-columns:1fr}
+  .consult h2{font-family:var(--display);font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1}
+  .consult p{margin-top:12px;max-width:56ch}
+  .offers{display:grid;gap:14px}
+  .offer{border:2px solid var(--mist);border-radius:18px;padding:18px}
+  .offer h3{font-family:var(--display);font-size:1.25rem;color:var(--dip)}
+  .offer p{margin-top:6px;font-size:.95rem}
+  .steps{margin-top:18px;padding-left:20px;max-width:56ch}
+  .steps li{margin-top:6px}
+  .consult .pill{border-color:var(--milk);margin-top:22px}
+  .consult .pill.solid{border-color:var(--dip)}
+  @media(min-width:860px){.consult-in{grid-template-columns:1fr 1fr;align-items:start}}
+
+  footer{text-align:center;padding:28px 20px 40px;font-size:.9rem}
+  footer .wordmark{font-size:2.4rem;display:block;margin-bottom:6px}
+
+  /* ---------- PHONE: compact, four-per-row product cards ---------- */
+  @media(max-width:600px){
+    .grid{grid-template-columns:repeat(4,1fr);gap:8px}
+    .card{border-radius:12px;border-width:1.5px}
+    .photo svg{width:42%}
+    .info{padding:6px 6px 8px;gap:2px}
+    .info h3{font-size:.66rem;line-height:1.25}
+    .info .note{display:none}
+    .price{font-size:.74rem;padding-top:4px}
+    .order{font-size:.62rem;padding:6px 2px;border-radius:8px;margin-top:4px}
+    .order .long{display:none}
+    .cat h2{font-size:1.5rem}
+    .intro{padding-top:32px}
+    .top-row{padding:10px 14px;gap:8px}
+    .top .wordmark{font-size:1.6rem}
+    .links{gap:6px}
+    .pill{padding:7px 11px;font-size:.78rem;gap:6px}
+    .pill svg{width:15px;height:15px}
+    nav.chips{padding:0 14px 10px}
+    main,.intro{padding-left:14px;padding-right:14px}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .cover,.cover .wordmark{animation:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body class="locked">
+
+<!-- =============== COVER (tap to open) =============== -->
+<button class="cover" id="cover" aria-label="Open the DIPPY catalog">
+  <span class="wordmark">DIPPY</span>
+  <span class="sub">Demure skin by DIPPY</span>
+  <span class="tap">Tap to open</span>
+  <svg class="drip" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="#EDB6B9" d="M0 0H400V30C385 30 380 70 366 70C352 70 350 30 330 30C312 30 310 52 296 52C282 52 280 30 260 30C240 30 238 82 220 82C202 82 200 30 180 30C160 30 158 58 144 58C130 58 128 30 108 30C88 30 86 74 70 74C54 74 52 30 34 30C20 30 16 48 0 48Z"/>
+  </svg>
+</button>
+
+<!-- =============== SITE =============== -->
+<header class="top">
+  <div class="top-row">
+    <span class="wordmark">DIPPY</span>
+    <div class="links">
+      <a class="pill" id="igLink" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM17.3 5.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg>
+        Instagram
+      </a>
+      <a class="pill solid" id="waLink" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 0 1 12 4zm-3 3.5c-.2 0-.5 0-.7.4-.3.4-1 1-1 2.4s1 2.8 1.200 3c.2.2 2 3.200 5 4.400 2.500 1 3 .8 3.500.7.600-.1 1.800-.7 2-1.400.3-.7.300-1.300.2-1.400l-.5-.3-1.800-.9c-.2-.1-.5-.1-.7.200l-.8 1c-.1.200-.3.200-.6.100a6.700 6.700 0 0 1-3.300-2.900c-.2-.4.200-.4.600-1.200.1-.2 0-.4 0-.5l-.8-1.900c-.2-.5-.4-.4-.6-.4z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+  <nav class="chips" id="chips" aria-label="Product categories"></nav>
+</header>
+
+<section class="intro">
+  <h1>Skincare that keeps your skin demure</h1>
+  <p>Browse every product available, grouped by what it does for your skin. Tap Order on any product to message me on WhatsApp, or book a consultation if you're not sure where to start.</p>
+</section>
+
+<main id="catalog"></main>
+
+<section class="consult" id="consultation">
+  <div class="consult-in">
+    <div>
+      <h2>Not sure what your skin needs? Ask me.</h2>
+      <p>We offer one-on-one skincare consultations and product recommendations. We look at your skin type, your concerns, and your budget, then build a routine you can actually keep up with.</p>
+      <ol class="steps">
+        <li>Message me on WhatsApp or Instagram.</li>
+        <li>Tell me your skin type, concerns, and what you're already using.</li>
+        <li>Send a clear, makeup-free photo of your face in natural light.</li>
+        <li>I reply with a routine and the products that fit it.</li>
+      </ol>
+      <a class="pill solid" id="waLink2" target="_blank" rel="noopener">Book a consultation on WhatsApp</a>
+    </div>
+    <div class="offers">
+      <div class="offer">
+        <h3>Skin consultation</h3>
+        <p>We go through your skin type and concerns such as acne, dark spots, dryness, oiliness, or uneven tone. This is paid service</p>
+      </div>
+      <div class="offer">
+        <h3>Product recommendations</h3>
+        <p>You get a morning and night routine using only what your skin needs, with the order to apply each product. This is a free service</p>
+      </div>
+      <div class="offer">
+        <h3>Important message</h3>
+        <p>Products are delivered within 48-72 hours of payment</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="wordmark">DIPPY</span>
+  Follow along on <a id="igLink2" target="_blank" rel="noopener">Instagram</a> or message me on <a id="waLink3" target="_blank" rel="noopener">WhatsApp</a>.
+</footer>
+
+<script>
+/* ==========================================================
+   EDIT THIS SECTION ONLY
+   ========================================================== */
+const CONFIG = {
+  brand: "DIPPY",
+  instagram: "https://www.instagram.com/demure.skin.by_dippy?stkn=ODF0bTlsOXU5czU4&utm_source=qr",   // <- your Instagram page link
+  whatsappNumber: "2347068644974",                         // <- your number: country code + number, no + or spaces
+  currency: "₦"                                            // <- change to $, £, GH₵, etc.
+};
+
+/* One block per classification. For each product:
+   name  = product name
+   price = number only
+   note  = short description (optional, use "" to skip)
+   img   = picture file name or link, e.g. "images/rose-cleanser.jpg" (leave "" to show a placeholder) */
+const CATALOG = [
+  { category: "Cleansers", blurb: "The first step of every routine", products: [
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Gentle Foam Cleanser", price: 6500, note: "Daily face wash for all skin types", img: "" },
+    { name: "DIPPY Deep Clean Gel", price: 7000, note: "For oily and acne-prone skin", img: "" }
+  ]},
+  { category: "Toners & Serums", blurb: "Balance and Targeted care for your concerns", products: [
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Hydrating Toner", price: 6000, note: "Soft, dewy finish", img: "" },
+    { name: "DIPPY Rose Face Mist", price: 5500, note: "Quick refresh any time of day", img: "" }
+  ]},
+  { category: "Body Lotions & Oil", blurb: "Smooth skin from head to toe", products: [
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Brightening Serum", price: 12000, note: "Helps fade dark spots", img: "" },
+    { name: "DIPPY Clear Skin Serum", price: 11500, note: "For breakouts and blemishes", img: "" }
+  ]},
+  { category: "Moisturizers", blurb: "Refresh", products: [
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Daily Face Cream", price: 9000, note: "Lightweight, non-greasy", img: "" },
+    { name: "DIPPY Night Repair Cream", price: 10500, note: "Rich overnight moisture", img: "" }
+  ]},
+  { category: "Sunscreen & Exfoliator", blurb: "Protect your skin every day", products: [
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" },
+    { name: "DIPPY Daily Sunscreen SPF 50", price: 8500, note: "No white cast", img: "" }
+  ]},
+  { category: "Body & Face Wash and Scrubs", blurb: "Cleanse skin deeply", products: [
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Butter", price: 8000, note: "Deep moisture for dry skin", img: "" },
+    { name: "DIPPY Body Scrub", price: 7500, note: "Gentle exfoliation", img: "" }
+  ]}
+];
+/* ========================================================== */
+
+const wa = (msg) => `https://wa.me/${CONFIG.whatsappNumber}` + (msg ? `?text=${encodeURIComponent(msg)}` : "");
+const fmt = (n) => CONFIG.currency + Number(n).toLocaleString();
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+// Links
+["igLink","igLink2"].forEach(id => document.getElementById(id).href = CONFIG.instagram);
+["waLink","waLink3"].forEach(id => document.getElementById(id).href = wa(`Hi ${CONFIG.brand}, I'd like to place an order.`));
+document.getElementById("waLink2").href = wa(`Hi ${CONFIG.brand}, I'd like to book a skincare consultation.`);
+
+// Placeholder bottle shown when a product has no picture
+const bottle = `<svg viewBox="0 0 60 90" aria-hidden="true"><rect x="22" y="2" width="16" height="12" rx="3" fill="#4A1C26"/><rect x="10" y="14" width="40" height="72" rx="14" fill="#fff" stroke="#4A1C26" stroke-width="3"/><circle cx="30" cy="48" r="9" fill="#D9808A"/></svg>`;
+
+const chips = document.getElementById("chips");
+const catalog = document.getElementById("catalog");
+
+CATALOG.forEach(group => {
+  const id = slug(group.category);
+  chips.insertAdjacentHTML("beforeend", `<a href="#${id}">${group.category}</a>`);
+
+  const cards = group.products.map(p => {
+    const photo = p.img
+      ? `<img src="${p.img}" alt="${p.name}" loading="lazy">`
+      : bottle;
+    const msg = `Hi ${CONFIG.brand}, I'd like to order the ${p.name} (${fmt(p.price)}).`;
+    return `
+      <article class="card">
+        <div class="photo">${photo}</div>
+        <div class="info">
+          <h3>${p.name}</h3>
+          ${p.note ? `<p class="note">${p.note}</p>` : ""}
+          <p class="price">${fmt(p.price)}</p>
+          <a class="order" href="${wa(msg)}" target="_blank" rel="noopener">Order<span class="long"> on WhatsApp</span></a>
+        </div>
+      </article>`;
+  }).join("");
+
+  catalog.insertAdjacentHTML("beforeend", `
+    <section class="cat" id="${id}">
+      <h2>${group.category} <small>${group.blurb || ""}</small></h2>
+      <div class="grid">${cards}</div>
+    </section>`);
+});
+
+chips.insertAdjacentHTML("beforeend", `<a href="#consultation">Consultations</a>`);
+
+// Cover: tap to reveal the site
+const cover = document.getElementById("cover");
+cover.addEventListener("click", () => {
+  cover.classList.add("open");
+  document.body.classList.remove("locked");
+  setTimeout(() => cover.style.display = "none", 1000);
+});
+</script>
+</body>
+</html>
